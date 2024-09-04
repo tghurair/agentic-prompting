@@ -1,7 +1,7 @@
 import streamlit as st
-from techniques.prompt_techniques.few_shot_prompt import FewShotPrompt
-from techniques.prompt_techniques.general_prompt import GeneralPrompt
-from techniques.prompt_techniques.include_exclude_prompt import IncludeExcludePrompt
+from techniques.few_shot_prompt import FewShotPrompt
+from techniques.general_prompt import GeneralPrompt
+from techniques.include_exclude_prompt import IncludeExcludePrompt
 
 def main():
     st.title("AI Prompt Engineering Assistant")

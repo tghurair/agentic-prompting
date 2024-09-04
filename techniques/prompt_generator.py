@@ -1,9 +1,9 @@
 from typing import Dict, Any
 from openai import OpenAI
-from prompt_techniques.general_prompt import GeneralPrompt
-from prompt_techniques.no_shot_prompt import NoShotPrompt
-from prompt_techniques.few_shot_prompt import FewShotPrompt
-from prompt_techniques.include_exclude_prompt import IncludeExcludePrompt
+from general_prompt import GeneralPrompt
+from no_shot_prompt import NoShotPrompt
+from few_shot_prompt import FewShotPrompt
+from include_exclude_prompt import IncludeExcludePrompt
 
 class PromptGenerator:
     def __init__(self, api_key: str):
