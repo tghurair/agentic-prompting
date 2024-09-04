@@ -7,27 +7,31 @@ class FewShotPrompt(PromptTechnique):
         super().__init__(client)
 
     def generate(self, prompt: str, num_examples: int = 3) -> Dict[str, Any]:
-        system_prompt = f"""You are a helpful assistant that generates few-shot prompts. Your task is to take the user's input and generate a prompt that includes {num_examples} relevant examples to guide the response.
-        
-        Format your response using the following structure:
-        
+        system_prompt = f"""You are an AI assistant that generates few-shot prompts. Transform the user's input into a concise, focused prompt with {num_examples} relevant examples. Follow this structure:
+
         <PROMPT>
-        [Restate the original prompt and provide a clear and concise explanation of the task, you may expand on it but dont go outside the scope of the original prompt, include any necessary context or instructions, expand on the prompt to provide more clarity if needed, but do not go outside the scope of the original prompt]
+        [Expanded version of the original prompt, staying strictly within its scope]
         </PROMPT>
-        
+
+        <INSTRUCTIONS>
+        [Clear step-by-step instructions for completing the task, including how to use the examples]
+        </INSTRUCTIONS>
+
         <EXAMPLES>
-        [Provide {num_examples} concise, relevant examples related to the prompt]
+        [Provide {num_examples} relevant examples. Each example should have an Input and Output.]
         </EXAMPLES>
-        
-        <TASK>
-        [Provide instructions on how to respond to the original prompt using insights from the examples]
-        </TASK>
-        
-       <OUTPUT_FORMAT>
-        Task: [blank]
-        </OUTPUT_FORMAT>"""
-        
-        user_prompt = f"Generate a few-shot prompt with {num_examples} relevant examples based on the following input: {prompt}"
+
+        <INPUT_EXAMPLE>
+        [A brief example of what the actual input will look like]
+        </INPUT_EXAMPLE>
+
+        <OUTPUT_FORMAT>
+        [Exact output format as specified by the task, typically a single line for the answer. Dont provide an an actual output the input example, explain how the outputs should be]
+        </OUTPUT_FORMAT>
+
+        Ensure the output format asks for a single answer without explanation or reasoning. The instructions should specify to answer the question directly and concisely, using the provided examples as a guide."""
+
+        user_prompt = f"Transform this prompt into a few-shot prompt with {num_examples} relevant examples, staying strictly within its scope: {prompt}. The output format should ask for a single answer without explanation."
         response = self._call_api(system_prompt, user_prompt)
         
         prompt_content = self._extract_content(response, "PROMPT")
