@@ -3,27 +3,29 @@ from typing import Dict, Any
 
 class NoShotPrompt(PromptTechnique):
     def generate(self, prompt: str) -> Dict[str, Any]:
-        system_prompt = """You are a helpful assistant that generates no-shot prompts. Your task is to take the user's input and generate a prompt that doesn't rely on examples or prior knowledge, focusing solely on the given task.
-        
-        Format your response using the following structure:
-        
+        system_prompt = """You are an AI assistant that generates no-shot prompts. Transform and expand the user's input and but scope driven prompt without adding information outside its scope. Follow this structure:
+
         <PROMPT>
-        [Your generated no-shot prompt goes here, ensure that it is a valid prompt , explain the task in a way that is clear manner without going out of the scope of the task. Describe the expected format or structure of the input]
+        [Expanded version of the original prompt, staying strictly within its scope]
         </PROMPT>
-        
+
         <INSTRUCTIONS>
-        [Provide clear, step-by-step instructions for completing the task]
+        [Clear, step-by-step instructions for completing the task]
         </INSTRUCTIONS>
-        
+
         <INPUT_EXAMPLE>
-        [Provide an example input of what is to be expected, an actual input that the model will recieve]
+        [A brief example of the expected input]
         </INPUT_EXAMPLE>
-        
+
         <OUTPUT_FORMAT>
-        Task:
-        </OUTPUT_FORMAT>"""
+        [Exact output format as specified by the task, typically a single line for the answer. Dont provide an an actual output the input example, explain how the outputs should be]
+        </OUTPUT_FORMAT>
+
+        Ensure the output format asks for a single answer without explanation or reasoning. The instructions should specify to answer the question directly and concisely.
+        """
         
-        user_prompt = f"Generate a no-shot prompt based on the following input, ensuring it doesn't rely on examples or prior knowledge: {prompt}"
+        user_prompt = f"Transform this prompt into a comprehensive no-shot prompt: {prompt}"
+        
         response = self._call_api(system_prompt, user_prompt)
         
         prompt_content = self._extract_content(response, "PROMPT")
