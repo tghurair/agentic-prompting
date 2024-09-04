@@ -1,4 +1,4 @@
-from prompt_technique import PromptTechnique
+from techniques.prompt_technique import PromptTechnique
 from typing import Dict, Any
 
 class NoShotPrompt(PromptTechnique):
