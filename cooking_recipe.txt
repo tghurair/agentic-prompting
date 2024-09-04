@@ -1,0 +1,13 @@
+# User Exprience
+    - user would give the general propmt
+    - user would have option to choose what kind of teqniwues to incorporate.
+    - initialy allow for one techniwue then expand to multiple
+
+# prompting technique:
+    - No shot
+    -few shot
+    - Train of thought
+    - Guided
+    - 
+# Strucuture 
+    - 
