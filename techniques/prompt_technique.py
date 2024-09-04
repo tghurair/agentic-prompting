@@ -12,7 +12,7 @@ class PromptTechnique(ABC):
 
     def _call_api(self, system_prompt: str, user_prompt: str) -> str:
         completion = self.client.chat.completions.create(
-            model="gpt-4",
+            model="gpt-4o",
             messages=[
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": user_prompt}

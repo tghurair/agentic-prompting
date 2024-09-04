@@ -35,10 +35,14 @@ class FewShotPrompt(PromptTechnique):
         task_content = self._extract_content(response, "TASK")
         
         return {
-            "prompt": prompt_content,
-            "additional_info": {
-                "examples": examples_content,
-                "task": task_content,
-                "num_examples": num_examples
-            }
+            f"""
+            Prompt:
+            {prompt_content}
+
+            Examples:
+            {examples_content}
+
+            Task:
+            {task_content}
+            """
         }
