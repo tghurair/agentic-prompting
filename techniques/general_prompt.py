@@ -17,6 +17,4 @@ class GeneralPrompt(PromptTechnique):
         
         prompt_content = self._extract_content(response, "PROMPT")
         
-        return {
-            "prompt": prompt_content
-        }
+        return prompt_content

@@ -33,9 +33,14 @@ class NoShotPrompt(PromptTechnique):
         output_format_content = self._extract_content(response, "OUTPUT_FORMAT")
         
         return {
-            "prompt": prompt_content,
-            "additional_info": {
-                "instructions": instructions_content,
-                "output_format": output_format_content
-            }
+            f"""
+            Prompt:
+            {prompt_content}
+
+            Instructions:
+            {instructions_content}
+
+            Output Format:
+            {output_format_content}
+            """
         }
