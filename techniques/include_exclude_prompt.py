@@ -33,8 +33,7 @@ class IncludeExcludePrompt(PromptTechnique):
         exclude_content = self._extract_content(response, "EXCLUDE")
         task_content = self._extract_content(response, "TASK")
         
-        return {
-            f"""
+        return  f"""
             Prompt: {prompt_content}
 
             Include:
@@ -47,4 +46,4 @@ class IncludeExcludePrompt(PromptTechnique):
             Task:
             {task_content}
             """
-        }
+        

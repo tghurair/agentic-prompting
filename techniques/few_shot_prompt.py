@@ -38,8 +38,7 @@ class FewShotPrompt(PromptTechnique):
         examples_content = self._extract_content(response, "EXAMPLES")
         task_content = self._extract_content(response, "TASK")
         
-        return {
-            f"""
+        return f"""
             Prompt:
             {prompt_content}
 
@@ -49,4 +48,4 @@ class FewShotPrompt(PromptTechnique):
             Task:
             {task_content}
             """
-        }
+        
