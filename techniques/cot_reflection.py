@@ -37,12 +37,8 @@ class ChainOfThoughtReflection(PromptTechnique):
         user_prompt = f"Generate a Chain of Thought prompt with reflection based on the following input: {prompt}"
         response = self._call_api(system_prompt, user_prompt)
         
-        prompt_content = self._extract_content(response, "PROMPT")
-        instructions_content = self._extract_content(response, "INSTRUCTIONS")
-        output_format_content = self._extract_content(response, "OUTPUT_FORMAT")
+        #prompt_content = self._extract_content(response, "PROMPT")
+        #instructions_content = self._extract_content(response, "INSTRUCTIONS")
+        #output_format_content = self._extract_content(response, "OUTPUT_FORMAT")
         
-        return {
-            "prompt": prompt_content,
-            "instructions": instructions_content,
-            "output_format": output_format_content
-        }
+        return response

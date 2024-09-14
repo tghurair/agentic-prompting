@@ -45,15 +45,15 @@ class ChainOfThoughtPrompt(PromptTechnique):
         output_format_content = self._extract_content(response, "OUTPUT_FORMAT")
         
         return f"""
-            Prompt:
-            {prompt_content}
+Prompt:
+{prompt_content}
 
-            Instructions:
-            {instructions_content}
+Instructions:
+{instructions_content}
 
-            Reasoning Template:
-            {reasoning_template_content}
+Reasoning Template:
+{reasoning_template_content}
 
-            Output Format:
-            {output_format_content}
-            """
+Output Format:
+{output_format_content}
+"""
