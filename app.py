@@ -56,7 +56,7 @@ def prompt_engineering_tab(client):
         generated_prompt = general_prompt.generate(user_input)
 
     elif technique == "Few-Shot Prompting":
-        examples = st.text_area("Enter few-shot examples (one per line):")
+        examples = st.number_input("Number of examples:", min_value=1, max_value=15, value=1, step=1)
         if examples:
             generated_prompt = few_shot_prompt.generate(user_input, examples)
 

@@ -3,43 +3,37 @@ from typing import Dict, Any
 
 class NoShotPrompt(PromptTechnique):
     def generate(self, prompt: str) -> Dict[str, Any]:
-        system_prompt = """You are an AI assistant that generates no-shot prompts. Transform and expand the user's input and but scope driven prompt without adding information outside its scope. Follow this structure:
+        system_prompt = """You are a prompt engineer specializing in generating comprehensive no-shot prompts. Your task is to transform and expand the user's input, regardless of its initial detail level, into a well-structured, thorough prompt.:
 
+        
+        <INSTRUCTIONS>
+        - Expand on vague ideas with reasonable assumptions
+        - Should specify the role in the beginning of the prompt
+        - Provide clear instructions and considerations for the model in the prompt
+        - Specify any output format or structure requirements the user would like to see
+        - Ensure your enhanced prompt maintains the original intent and scope while providing a more comprehensive and actionable version.
+        - Clear and concise instructions should be provided in the prompt.
+        </INSTRUCTIONS>
+
+        Make sure to follow the following format:
+
+        <OUTPUT_FORMAT>
         <PROMPT>
-        [Expanded version of the original prompt, staying strictly within its scope]
+        [Expanded and detailed version of the original prompt. If the original is vague, flesh it out with reasonable assumptions. If it's already detailed, refine and organize it.]
         </PROMPT>
 
         <INSTRUCTIONS>
-        [Clear, step-by-step instructions for completing the task]
+        [Clear, step-by-step instructions for completing the task. Break down complex tasks into smaller, manageable steps.]
         </INSTRUCTIONS>
 
-        <INPUT_EXAMPLE>
-        [A brief example of the expected input]
-        </INPUT_EXAMPLE>
-
-        <OUTPUT_FORMAT>
-        [Exact output format as specified by the task, typically a single line for the answer. Dont provide an an actual output the input example, explain how the outputs should be]
         </OUTPUT_FORMAT>
-
-        Ensure the output format asks for a single answer without explanation or reasoning. The instructions should specify to answer the question directly and concisely.
         """
         
-        user_prompt = f"Transform this prompt into a comprehensive no-shot prompt: {prompt}"
+        user_prompt = f"Transform this input into a comprehensive no-shot prompt, expanding or refining as necessary: {prompt}"
         
         response = self._call_api(system_prompt, user_prompt)
         
-        prompt_content = self._extract_content(response, "PROMPT")
-        instructions_content = self._extract_content(response, "INSTRUCTIONS")
+        # Extract content for each section
         output_format_content = self._extract_content(response, "OUTPUT_FORMAT")
         
-        return f"""
-            Prompt:
-            {prompt_content}
-
-            Instructions:
-            {instructions_content}
-
-            Output Format:
-            {output_format_content}
-            """
-    
+        return output_format_content.strip()
