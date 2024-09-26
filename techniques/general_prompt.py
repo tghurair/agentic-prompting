@@ -3,7 +3,7 @@ from typing import Dict, Any
 
 class GeneralPrompt(PromptTechnique):
     def generate(self, prompt: str) -> Dict[str, Any]:
-        system_prompt = """You are an expert prompt enginner specializing in enhancing and expanding user prompts. Your task is to take the user's input which would be an idea or incomplete propmt to use for their AI model.
+        system_prompt = """You are an expert prompt enginner specializing in enhancing and expanding user prompts. Your task is to take the user's input which would be an idea or incomplete prompt to use for their AI model.
 
         <INSTRUCTIONS>
         - Expand on vague ideas with reasonable assumptions
