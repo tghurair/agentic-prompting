@@ -6,6 +6,7 @@ from openai import OpenAI
 from techniques.chain_of_thought import ChainOfThoughtPrompt
 from techniques.cot_reflection import ChainOfThoughtReflection
 from techniques.no_shot_prompt import NoShotPrompt
+from techniques.Agentic_prompting import AgenticPrompting
 
 def main():
     st.set_page_config(layout="wide")
@@ -21,7 +22,7 @@ def main():
     client = OpenAI(api_key=api_key)
     
     # Tab selection
-    tab1, tab2, tab3 = st.tabs(["Prompt Engineering", "Playground", "How to Use"])
+    tab1, tab2, tab3, tab4 = st.tabs(["Prompt Engineering", "Playground", "Agentic Prompting", "How to Use"])
     
     with tab1:
         prompt_engineering_tab(client)
@@ -30,6 +31,9 @@ def main():
         playground_tab(client)
     
     with tab3:
+        agentic_prompting_tab(client)
+    
+    with tab4:
         how_to_use_tab()
 
 def prompt_engineering_tab(client):
@@ -42,7 +46,7 @@ def prompt_engineering_tab(client):
     cot_reflection_prompt = ChainOfThoughtReflection(client)
     no_shot_prompt = NoShotPrompt(client)
     
-    user_input = st.text_area("Enter your prompt idea:")
+    user_input = st.text_area("Enter your prompt idea:", key="prompt_engineering_input")
     
     technique = st.radio(
         "Select a prompt engineering technique:",
@@ -63,9 +67,9 @@ def prompt_engineering_tab(client):
     elif technique == "Include-Exclude Prompting":
         col1, col2 = st.columns(2)
         with col1:
-            include = st.text_area("Include in prompt:")
+            include = st.text_area("Include in prompt:", key="include_prompt")
         with col2:
-            exclude = st.text_area("Exclude from prompt:")
+            exclude = st.text_area("Exclude from prompt:", key="exclude_prompt")
         if include or exclude:
             generated_prompt = include_exclude_prompt.generate(user_input, include, exclude)
 
@@ -89,8 +93,8 @@ def playground_tab(client):
     st.title("Prompt Playground")
     
     model = st.selectbox("Select Model", ["gpt-4o-mini", "gpt-4o", "o1-preview"])
-    system_prompt = st.text_area("System Prompt:", "You are a helpful assistant.")
-    user_input = st.text_area("User Input:")
+    system_prompt = st.text_area("System Prompt:", "You are a helpful assistant.", key="system_prompt")
+    user_input = st.text_area("User Input:", key="playground_input")
     
     if st.button("Generate Response"):
         if user_input:
@@ -105,6 +109,27 @@ def playground_tab(client):
             st.write(response.choices[0].message.content)
         else:
             st.warning("Please enter a user input.")
+
+def agentic_prompting_tab(client):
+    st.title("Agentic Prompting")
+    
+    agentic_prompt = AgenticPrompting(client)
+    
+    user_input = st.text_area("Enter your prompt idea:", key="agentic_input")
+    
+    if st.button("Generate Agentic Prompt"):
+        if user_input:
+            with st.spinner("Generating Agentic Prompt..."):
+                try:
+                    result = agentic_prompt.generate(user_input)
+                    st.subheader("Generated Prompt:")
+                    st.code(result["prompt"], language="markdown")
+                    st.subheader("Analysis:")
+                    st.write(result["analysis"])
+                except Exception as e:
+                    st.error(f"An error occurred: {str(e)}")
+        else:
+            st.warning("Please enter a prompt idea.")
 
 def how_to_use_tab():
     st.title("How to Use the AI Prompt Engineering Assistant")
@@ -135,6 +160,12 @@ def how_to_use_tab():
     st.write("3. Optionally, modify the system prompt.")
     st.write("4. Enter your user input (you can paste the generated prompt from the Prompt Engineering tab).")
     st.write("5. Click the 'Generate Response' button to see the AI's response.")
+
+    st.header("Using Agentic Prompting")
+    st.write("1. Navigate to the 'Agentic Prompting' tab.")
+    st.write("2. Enter your prompt idea in the text area.")
+    st.write("3. Click the 'Generate Agentic Prompt' button.")
+    st.write("4. The system will analyze your prompt and generate an optimized version using AI agents.")
 
 if __name__ == "__main__":
     main()
