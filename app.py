@@ -7,6 +7,7 @@ from techniques.chain_of_thought import ChainOfThoughtPrompt
 from techniques.cot_reflection import ChainOfThoughtReflection
 from techniques.no_shot_prompt import NoShotPrompt
 from techniques.Agentic_prompting import AgenticPrompting
+from techniques.ReAct import ReActPrompt
 
 def main():
     st.set_page_config(layout="wide")
@@ -45,13 +46,14 @@ def prompt_engineering_tab(client):
     chain_of_thought_prompt = ChainOfThoughtPrompt(client)
     cot_reflection_prompt = ChainOfThoughtReflection(client)
     no_shot_prompt = NoShotPrompt(client)
+    react_prompt = ReActPrompt(client)
     
     user_input = st.text_area("Enter your prompt idea:", key="prompt_engineering_input")
     
     technique = st.radio(
         "Select a prompt engineering technique:",
         ["General Prompting", "Few-Shot Prompting", "Include-Exclude Prompting", 
-         "Chain of Thought", "Chain of Thought with Reflection", "No-Shot Prompting"]
+         "Chain of Thought", "Chain of Thought with Reflection", "No-Shot Prompting", "ReAct Prompting"]
     )
     
     generated_prompt = None
@@ -81,6 +83,10 @@ def prompt_engineering_tab(client):
 
     elif technique == "No-Shot Prompting":
         generated_prompt = no_shot_prompt.generate(user_input)
+    
+    elif technique == "ReAct Prompting":
+        tool = st.text_input("Specify a tool (optional):", key="react_tool")
+        generated_prompt = react_prompt.generate(user_input, tool if tool else None)
 
     if st.button("Generate Prompt"):
         if user_input and generated_prompt:
