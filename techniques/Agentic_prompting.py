@@ -34,21 +34,27 @@ class NoShotPromptTool(BaseTool):
     def _run(self, idea: str) -> str:
         return f"""Based on the idea: {idea}, please provide a no-shot prompt, Format your response using the following structure (Treat this as a template do not output it as is):
         
+        <INSTRUCTIONS>
+        - Expand on vague ideas with reasonable assumptions
+        - Should specify the role in the beginning of the prompt
+        - Provide clear instructions and considerations for the model in the prompt
+        - Specify any output format or structure requirements the user would like to see
+        - Ensure your enhanced prompt maintains the original intent and scope while providing a more comprehensive and actionable version.
+        - Clear and concise instructions should be provided in the prompt.
+        </INSTRUCTIONS>
+
+        Make sure to follow the following format:
+
+        <OUTPUT_FORMAT>
         <PROMPT>
-        [Restate the original prompt]
+        [Expanded and detailed version of the original prompt. If the original is vague, flesh it out with reasonable assumptions. If it's already detailed, refine and organize it.]
         </PROMPT>
-        
-        <INCLUDE>
-        [List elements to include, with brief explanations]
-        </INCLUDE>
-        
-        <EXCLUDE>
-        [List elements to exclude, with brief explanations]
-        </EXCLUDE>
-        
-        <TASK>
-        [Provide instructions on how to respond to the prompt while adhering to the include/exclude guidelines]
-        </TASK>
+
+        <INSTRUCTIONS>
+        [Clear, step-by-step instructions for completing the task. Break down complex tasks into smaller, manageable steps.]
+        </INSTRUCTIONS>
+
+        </OUTPUT_FORMAT>
         """
 
 class FewShotPromptTool(BaseTool):
@@ -198,7 +204,7 @@ class AgenticPrompting(PromptTechnique):
     def __init__(self, client):
         super().__init__(client)
         self.llm = ChatOpenAI(
-            model="gpt-4",
+            model="gpt-4o",
             api_key=client.api_key
         )
 
@@ -214,30 +220,36 @@ class AgenticPrompting(PromptTechnique):
             memory=True,
             verbose=True,
             llm=self.llm,
-            max_iter=6
+            max_iter=10
         )
 
         analyze_prompt_task = Task(
             description=(
                 "Analyze the given prompt and choose the most suitable prompt technique for the task. "
                 "Consider aspects such as clarity, relevance, and potential ambiguities. "
-                "Provide a detailed explanation for each identified issue, referencing best practices in prompt engineering. "
-                "Recommend the most appropriate prompt technique (general prompt, no shot prompt, few shot prompt, include exclude prompt, chain of thought prompt, chain of thought prompt with reflection) and justify your choice.\n\n"
-                f"Prompt: {prompt}\n\n"
-                "Your analysis should be thorough and actionable, offering specific suggestions for enhancing the prompt and selecting the best technique."
+                "Provide a detailed, step-by-step analysis for each issue identified to ensure the prompt's clarity, relevance, and actionable content are addressed. Reference best practices in prompt engineering where applicable. "
+                "When deciding on which prompt technique to use, understand the core of the prompt and its scope. "
+                "Consider how it can be best answered. For example: math problems are best solved with chain-of-thought (CoT) or CoT reflection; short answers are best solved with no-shot or few-shot techniques. "
+                "VITAL: Recommend the most appropriate prompt technique (general prompt, no shot prompt, few shot prompt, include-exclude prompt, chain of thought prompt, chain of thought prompt with reflection) and justify your choice."
+                f" Prompt: {prompt} "
+                "Your analysis should be clear, thorough, and actionable, offering specific suggestions for enhancing the prompt and selecting the best technique."
             ),
+
             expected_output='A comprehensive analysis of the prompt with detailed explanations, actionable suggestions for improvement, and a Decision for the most suitable prompt technique.',
             agent=prompt_engineer
         )
 
         generate_prompt_task = Task(
             description=(
-                "Generate a detailed and comprehensive prompt based on the analysis done, "
-                "ensuring clarity, relevance, and adherence to the guidelines provided."
-                "Implement the recommended prompt technique"
-                "Do Not go out of the scope of the prompt, ensure that the main scope is adhered to and we are not wandering off."
-                "Output the prompt only"
+                "Generate a detailed and comprehensive prompt based on the analysis completed. "
+                "Do not deviate from the scope of the original prompt. Ensure that the main scope is maintained and avoid any unrelated content. "
+                "Follow the recommended prompt technique as determined in the analysis step. "
+                "Ensure the final prompt is clear, relevant, and adheres to the guidelines provided. "
+                "Use the suggested prompt technique to craft the enhanced prompt. "
+                "IMPORTANT: Return the enhanced prompt only. DO NOT answer the prompt yourself. REMEMBER, you are a prompt engineer. "
+                "Output only the enhanced prompt, without any additional text or explanation."
             ),
+
             expected_output='Enhanced prompt that follows the decision made for which prompt technique to use',
             agent=prompt_engineer,
             tools=[
