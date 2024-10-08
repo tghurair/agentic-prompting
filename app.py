@@ -8,10 +8,10 @@ from techniques.cot_reflection import ChainOfThoughtReflection
 from techniques.no_shot_prompt import NoShotPrompt
 from techniques.Agentic_prompting import AgenticPrompting
 from techniques.ReAct import ReActPrompt
-
-# Add this at the beginning of the script
-if 'current_tab' not in st.session_state:
-    st.session_state.current_tab = "Prompt Engineering"
+from pages.OverviewPage import OverviewPage
+from pages.PromptEngineeringPage import PromptEngineeringPage
+from pages.AgenticPromptingPage import AgenticPromptingPage
+from pages.PlaygroundPage import PlaygroundPage
 
 # Initialize session state
 if 'openai_client' not in st.session_state:
@@ -43,8 +43,8 @@ def prompt_engineering_tab(client):
     
     technique = st.radio(
         "Select a prompt engineering technique:",
-        ["General Prompting", "Few-Shot Prompting", "Include-Exclude Prompting", 
-         "Chain of Thought", "Chain of Thought with Reflection", "No-Shot Prompting", "ReAct Prompting"]
+        ["General Prompting", "No-Shot Prompting", "Few-Shot Prompting", 
+         "Include-Exclude Prompting", "Chain of Thought", "Chain of Thought with Reflection", "ReAct Prompting"]
     )
     
     prompt_technique = get_prompt_technique(technique, client)
@@ -96,12 +96,6 @@ def playground_tab(client):
         else:
             st.warning("Please enter a user input.")
 
-def get_agentic_prompt(client):
-    return AgenticPrompting(client)
-
-def generate_agentic_prompt(agentic_prompt, user_input):
-    return agentic_prompt.generate(user_input)
-
 def agentic_prompting_tab(client):
     st.title("Agentic Prompting")
     
@@ -125,70 +119,54 @@ def agentic_prompting_tab(client):
         else:
             st.warning("Please enter a prompt idea.")
 
-def how_to_use_tab():
-    st.title("How to Use the AI Prompt Engineering Assistant")
+def guide_page():
+    st.title("AI Prompt Engineering Assistant Guide")
     
-    st.header("Getting Started")
-    st.write("1. Enter your OpenAI API key in the sidebar.")
-    st.write("2. Navigate to the 'Prompt Engineering' tab.")
+    tabs = st.tabs(["Overview", "Prompt Engineering", "Agentic Prompting", "Playground"])
     
-    st.header("Using the Prompt Engineering Assistant")
-    st.write("1. Enter your prompt idea in the text area.")
-    st.write("2. Select a prompt engineering technique.")
-    st.write("3. Provide additional information if required by the selected technique.")
-    st.write("4. Click the 'Generate Prompt' button to see the result.")
+    with tabs[0]:
+        OverviewPage().render()
     
-    st.header("Prompt Engineering Techniques")
-    st.subheader("1. General Prompting")
-    st.write("This technique generates a prompt based on your input without any additional constraints.")
+    with tabs[1]:
+        PromptEngineeringPage().render()
     
-    st.subheader("2. Few-Shot Prompting")
-    st.write("This technique uses examples to guide the AI in generating a more specific prompt. Provide one example per line in the text area.")
+    with tabs[2]:
+        AgenticPromptingPage().render()
     
-    st.subheader("3. Include-Exclude Prompting")
-    st.write("This technique allows you to specify elements to include or exclude from the generated prompt. Use the provided text areas to enter your preferences.")
+    with tabs[3]:
+        PlaygroundPage().render()
 
-    st.header("Using the Playground")
-    st.write("1. Navigate to the 'Playground' tab.")
-    st.write("2. Select a model from the dropdown menu.")
-    st.write("3. Optionally, modify the system prompt.")
-    st.write("4. Enter your user input (you can paste the generated prompt from the Prompt Engineering tab).")
-    st.write("5. Click the 'Generate Response' button to see the AI's response.")
-
-    st.header("Using Agentic Prompting")
-    st.write("1. Navigate to the 'Agentic Prompting' tab.")
-    st.write("2. Enter your prompt idea in the text area.")
-    st.write("3. Click the 'Generate Agentic Prompt' button.")
-    st.write("4. The system will analyze your prompt and generate an optimized version using AI agents.")
+def main_interface():
+    st.title("AI Prompt Engineering Assistant")
+    
+    tabs = st.tabs(["Prompt Engineering", "Playground", "Agentic Prompting"])
+    
+    with tabs[0]:
+        prompt_engineering_tab(st.session_state.openai_client)
+    
+    with tabs[1]:
+        playground_tab(st.session_state.openai_client)
+    
+    with tabs[2]:
+        agentic_prompting_tab(st.session_state.openai_client)
 
 def main():
     st.set_page_config(layout="wide")
-    st.sidebar.title("Settings")
     
-    # API key input in sidebar
-    api_key = st.sidebar.text_input("Enter your OpenAI API key:", type="password")
+    # Navigation buttons
+    page = st.sidebar.radio("Go to", ["Guide", "Prompt Crafting Studio"])
     
-    if api_key:
-        st.session_state.openai_client = get_openai_client(api_key)
-    
-    if not st.session_state.openai_client:
-        st.warning("Please enter your OpenAI API key in the sidebar.")
-        return
-
-    # Tab selection
-    tab1, tab2, tab3, tab4 = st.tabs(["Prompt Engineering", "Playground", "Agentic Prompting", "How to Use"])
-    
-    with tab1:
-        prompt_engineering_tab(st.session_state.openai_client)
-    
-    with tab2:
-        playground_tab(st.session_state.openai_client)
-    
-    with tab3:
-        agentic_prompting_tab(st.session_state.openai_client)
-    
-    with tab4:
-        how_to_use_tab()
+    if page == "Guide":
+        guide_page()
+    else:
+        # Only show API key input and main interface if Prompt Crafting Studio is selected
+        api_key = st.sidebar.text_input("Enter your OpenAI API key:", type="password")
+        
+        if api_key:
+            st.session_state.openai_client = get_openai_client(api_key)
+            main_interface()
+        else:
+            st.warning("Please enter your OpenAI API key in the sidebar to access the Prompt Crafting Studio.")
 
 if __name__ == "__main__":
     main()
