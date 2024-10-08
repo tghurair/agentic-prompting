@@ -226,13 +226,21 @@ class AgenticPrompting(PromptTechnique):
         analyze_prompt_task = Task(
             description=(
                 "Analyze the given prompt and choose the most suitable prompt technique for the task. "
-                "Consider aspects such as clarity, relevance, and potential ambiguities. "
-                "Provide a detailed, step-by-step analysis for each issue identified to ensure the prompt's clarity, relevance, and actionable content are addressed. Reference best practices in prompt engineering where applicable. "
-                "When deciding on which prompt technique to use, understand the core of the prompt and its scope. "
-                "Consider how it can be best answered. For example: math problems are best solved with chain-of-thought (CoT) or CoT reflection; short answers are best solved with no-shot or few-shot techniques. "
-                "VITAL: Recommend the most appropriate prompt technique (general prompt, no shot prompt, few shot prompt, include-exclude prompt, chain of thought prompt, chain of thought prompt with reflection) and justify your choice."
-                f" Prompt: {prompt} "
-                "Your analysis should be clear, thorough, and actionable, offering specific suggestions for enhancing the prompt and selecting the best technique."
+                "Consider the following guidelines when selecting a technique:\n\n"
+                "1. General Prompt: Use for open-ended questions or tasks that require a broad approach.\n"
+                "2. No-Shot Prompt: Ideal for straightforward tasks where the model can directly generate an answer without examples, usually for short answers and classification tasks.\n"
+                "3. Few-Shot Prompt: Best for tasks where providing 2-5 examples can guide the model to understand the desired output format or style.\n"
+                "4. Include-Exclude Prompt: Useful when you need to specify particular elements to focus on or avoid in the response.\n"
+                "5. Chain of Thought (CoT) Prompt: Suitable for complex problem-solving, especially in mathematics, logic, or multi-step reasoning tasks.\n"
+                "6. CoT Reflection Prompt: Best for very complex problems that benefit from self-correction and iterative thinking.\n\n"
+                "Consider the following factors:\n"
+                "- Task complexity: Simple tasks often don't require CoT or reflection.\n"
+                "- Output format: If a specific structure is needed, few-shot might be best.\n"
+                "- Problem domain: Math or logic problems often benefit from CoT, while general knowledge questions might not.\n"
+                "- Need for examples: If the task is unclear without examples, consider few-shot.\n"
+                "- Constraints: If there are specific inclusions or exclusions, the include-exclude technique might be appropriate.\n\n"
+                f"Analyze this prompt: {prompt}\n"
+                "Provide a brief analysis of the prompt's requirements and justify your choice of technique based on the guidelines above."
             ),
 
             expected_output='A comprehensive analysis of the prompt with detailed explanations, actionable suggestions for improvement, and a Decision for the most suitable prompt technique.',
