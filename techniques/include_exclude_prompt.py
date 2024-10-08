@@ -10,7 +10,7 @@ class IncludeExcludePrompt(PromptTechnique):
         Format your response using the following structure:
         
         <PROMPT>
-        [Restate the original prompt]
+        [Enhance and expand on the original prompt while adhering on the main scope of the prompt, focusing on the core question or task. Maintain its original scope and intent, providing additional context or clarification if necessary.]
         </PROMPT>
         
         <INCLUDE>
@@ -27,23 +27,5 @@ class IncludeExcludePrompt(PromptTechnique):
         
         user_prompt = f"Generate an include-exclude prompt based on the following input: {prompt}\n\nInclude: {', '.join(include)}\nExclude: {', '.join(exclude)}. Feel free to add include/exclude examples but ensure that they are still relevant to the scope of each section."
         response = self._call_api(system_prompt, user_prompt)
-        
-        prompt_content = self._extract_content(response, "PROMPT")
-        include_content = self._extract_content(response, "INCLUDE")
-        exclude_content = self._extract_content(response, "EXCLUDE")
-        task_content = self._extract_content(response, "TASK")
-        
-        return  f"""
-            Prompt: {prompt_content}
-
-            Include:
-            {include_content}
-
-            Exclude:
-            
-            {exclude_content}
-
-            Task:
-            {task_content}
-            """
+        return response.strip()
         

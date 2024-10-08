@@ -36,18 +36,6 @@ Make sure to follow the following structure in your response:
         user_prompt = f"Generate a ReAct prompt based on the following input: {prompt}"
         if tool:
             user_prompt += f"\n\nTool to incorporate: {tool}"
-
         response = self._call_api(system_prompt, user_prompt)
-        
-        prompt_content = self._extract_content(response, "PROMPT")
-        reasoning_and_action_content = self._extract_content(response, "REASONING_AND_ACTION")
-        
-        formatted_output = f"""
-Prompt:
-{prompt_content}
-
-Reasoning and Action:
-{reasoning_and_action_content}
-"""
-
-        return formatted_output.strip()
+        output_format_content = self._extract_content(response, "OUTPUT_FORMAT")
+        return output_format_content.strip()

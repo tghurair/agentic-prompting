@@ -44,9 +44,6 @@ The actual response to the query must be entirely contained within the <output> 
 </OUTPUT_FORMAT>"""
         user_prompt = f"{prompt}"
         response = self._call_api(system_prompt, user_prompt)
-        
-        #prompt_content = self._extract_content(response, "PROMPT")
-        #instructions_content = self._extract_content(response, "INSTRUCTIONS")
         output_format_content = self._extract_content(response, "OUTPUT_FORMAT")
         
         return f"{output_format_content.strip()} \n\n {reflection_prompt.strip()}".strip()

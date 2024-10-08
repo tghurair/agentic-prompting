@@ -33,7 +33,5 @@ class NoShotPrompt(PromptTechnique):
         
         response = self._call_api(system_prompt, user_prompt)
         
-        # Extract content for each section
         output_format_content = self._extract_content(response, "OUTPUT_FORMAT")
-        
         return output_format_content.strip()

@@ -220,7 +220,7 @@ class AgenticPrompting(PromptTechnique):
             memory=True,
             verbose=True,
             llm=self.llm,
-            max_iter=10
+            max_iter=12
         )
 
         analyze_prompt_task = Task(
@@ -240,6 +240,7 @@ class AgenticPrompting(PromptTechnique):
                 "- Need for examples: If the task is unclear without examples, consider few-shot.\n"
                 "- Constraints: If there are specific inclusions or exclusions, the include-exclude technique might be appropriate.\n\n"
                 f"Analyze this prompt: {prompt}\n"
+                "do not make any assumptions that would invalidate the original intent of the prompt. Dont go out of scope."
                 "Provide a brief analysis of the prompt's requirements and justify your choice of technique based on the guidelines above."
             ),
 

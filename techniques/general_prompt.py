@@ -6,7 +6,7 @@ class GeneralPrompt(PromptTechnique):
         system_prompt = """You are an expert prompt enginner specializing in enhancing and expanding user prompts. Your task is to take the user's input which would be an idea or incomplete prompt to use for their AI model.
 
         <INSTRUCTIONS>
-        - Expand on vague ideas with reasonable assumptions
+        - Expand on vague ideas with reasonable assumptions, but do not make any assumptions that would invalidate the original intent of the prompt. Dont go out of scope.
         - Should specify the role in the beginning of the prompt
         - Provide clear instructions and considerations for the model in the prompt
         - Specify any output format or structure requirements the user would like to see
@@ -22,6 +22,4 @@ class GeneralPrompt(PromptTechnique):
         user_prompt = prompt
 
         response = self._call_api(system_prompt, user_prompt)
-        
-        # Since we're only returning a single prompt, we don't need to extract multiple sections
         return response.strip()

@@ -9,44 +9,35 @@ from techniques.no_shot_prompt import NoShotPrompt
 from techniques.Agentic_prompting import AgenticPrompting
 from techniques.ReAct import ReActPrompt
 
-def main():
-    st.set_page_config(layout="wide")
-    st.sidebar.title("Settings")
-    
-    # API key input in sidebar
-    api_key = st.sidebar.text_input("Enter your OpenAI API key:", type="password")
-    
-    if not api_key:
-        st.warning("Please enter your OpenAI API key in the sidebar.")
-        return
+# Add this at the beginning of the script
+if 'current_tab' not in st.session_state:
+    st.session_state.current_tab = "Prompt Engineering"
 
-    client = OpenAI(api_key=api_key)
-    
-    # Tab selection
-    tab1, tab2, tab3, tab4 = st.tabs(["Prompt Engineering", "Playground", "Agentic Prompting", "How to Use"])
-    
-    with tab1:
-        prompt_engineering_tab(client)
-    
-    with tab2:
-        playground_tab(client)
-    
-    with tab3:
-        agentic_prompting_tab(client)
-    
-    with tab4:
-        how_to_use_tab()
+# Initialize session state
+if 'openai_client' not in st.session_state:
+    st.session_state.openai_client = None
+
+@st.cache_resource
+def get_openai_client(api_key):
+    return OpenAI(api_key=api_key)
+
+def get_prompt_technique(technique_name, client):
+    techniques = {
+        "General Prompting": GeneralPrompt,
+        "Few-Shot Prompting": FewShotPrompt,
+        "Include-Exclude Prompting": IncludeExcludePrompt,
+        "Chain of Thought": ChainOfThoughtPrompt,
+        "Chain of Thought with Reflection": ChainOfThoughtReflection,
+        "No-Shot Prompting": NoShotPrompt,
+        "ReAct Prompting": ReActPrompt
+    }
+    return techniques[technique_name](client)
+
+def generate_prompt(technique, user_input, **kwargs):
+    return technique.generate(user_input, **kwargs)
 
 def prompt_engineering_tab(client):
     st.title("AI Prompt Engineering Assistant")
-    
-    general_prompt = GeneralPrompt(client)
-    few_shot_prompt = FewShotPrompt(client)
-    include_exclude_prompt = IncludeExcludePrompt(client)
-    chain_of_thought_prompt = ChainOfThoughtPrompt(client)
-    cot_reflection_prompt = ChainOfThoughtReflection(client)
-    no_shot_prompt = NoShotPrompt(client)
-    react_prompt = ReActPrompt(client)
     
     user_input = st.text_area("Enter your prompt idea:", key="prompt_engineering_input")
     
@@ -56,44 +47,38 @@ def prompt_engineering_tab(client):
          "Chain of Thought", "Chain of Thought with Reflection", "No-Shot Prompting", "ReAct Prompting"]
     )
     
-    generated_prompt = None
+    prompt_technique = get_prompt_technique(technique, client)
     
-    if technique == "General Prompting":
-        generated_prompt = general_prompt.generate(user_input)
-
-    elif technique == "Few-Shot Prompting":
-        examples = st.number_input("Number of examples:", min_value=1, max_value=15, value=1, step=1)
-        if examples:
-            generated_prompt = few_shot_prompt.generate(user_input, examples)
-
+    kwargs = {}
+    if technique == "Few-Shot Prompting":
+        kwargs['num_examples'] = st.number_input("Number of examples:", min_value=1, max_value=15, value=1, step=1)
     elif technique == "Include-Exclude Prompting":
         col1, col2 = st.columns(2)
         with col1:
-            include = st.text_area("Include in prompt:", key="include_prompt")
+            kwargs['include'] = st.text_area("Include in prompt:", key="include_prompt")
         with col2:
-            exclude = st.text_area("Exclude from prompt:", key="exclude_prompt")
-        if include or exclude:
-            generated_prompt = include_exclude_prompt.generate(user_input, include, exclude)
-
-    elif technique == "Chain of Thought":
-        generated_prompt = chain_of_thought_prompt.generate(user_input)
-
-    elif technique == "Chain of Thought with Reflection":
-        generated_prompt = cot_reflection_prompt.generate(user_input)
-
-    elif technique == "No-Shot Prompting":
-        generated_prompt = no_shot_prompt.generate(user_input)
-    
+            kwargs['exclude'] = st.text_area("Exclude from prompt:", key="exclude_prompt")
     elif technique == "ReAct Prompting":
-        tool = st.text_input("Specify a tool (optional):", key="react_tool")
-        generated_prompt = react_prompt.generate(user_input, tool if tool else None)
+        kwargs['tool'] = st.text_input("Specify a tool (optional):", key="react_tool")
 
     if st.button("Generate Prompt"):
-        if user_input and generated_prompt:
-            st.subheader("Generated Prompt:")
-            st.code(generated_prompt, language="markdown")
+        if user_input:
+            with st.spinner("Generating prompt..."):
+                generated_prompt = generate_prompt(prompt_technique, user_input, **kwargs)
+                st.subheader("Generated Prompt:")
+                st.code(generated_prompt, language="markdown")
         else:
             st.warning("Please enter a prompt idea and provide necessary information for the selected technique.")
+
+def generate_ai_response(client, model, system_prompt, user_input):
+    response = client.chat.completions.create(
+        model=model,
+        messages=[
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": user_input}
+        ]
+    )
+    return response.choices[0].message.content
 
 def playground_tab(client):
     st.title("Prompt Playground")
@@ -104,26 +89,29 @@ def playground_tab(client):
     
     if st.button("Generate Response"):
         if user_input:
-            response = client.chat.completions.create(
-                model=model,
-                messages=[
-                    {"role": "system", "content": system_prompt},
-                    {"role": "user", "content": user_input}
-                ]
-            )
-            st.subheader("AI Response:")
-            st.write(response.choices[0].message.content)
+            with st.spinner("Generating response..."):
+                ai_response = generate_ai_response(client, model, system_prompt, user_input)
+                st.subheader("AI Response:")
+                st.write(ai_response)
         else:
             st.warning("Please enter a user input.")
+
+def get_agentic_prompt(client):
+    return AgenticPrompting(client)
+
+def generate_agentic_prompt(agentic_prompt, user_input):
+    return agentic_prompt.generate(user_input)
 
 def agentic_prompting_tab(client):
     st.title("Agentic Prompting")
     
     agentic_prompt = AgenticPrompting(client)
     
-    user_input = st.text_area("Enter your prompt idea:", key="agentic_input")
-    
-    if st.button("Generate Agentic Prompt"):
+    with st.form(key='agentic_form'):
+        user_input = st.text_area("Enter your prompt idea:", key="agentic_input")
+        submit_button = st.form_submit_button("Generate Agentic Prompt")
+
+    if submit_button:
         if user_input:
             with st.spinner("Generating Agentic Prompt..."):
                 try:
@@ -172,6 +160,35 @@ def how_to_use_tab():
     st.write("2. Enter your prompt idea in the text area.")
     st.write("3. Click the 'Generate Agentic Prompt' button.")
     st.write("4. The system will analyze your prompt and generate an optimized version using AI agents.")
+
+def main():
+    st.set_page_config(layout="wide")
+    st.sidebar.title("Settings")
+    
+    # API key input in sidebar
+    api_key = st.sidebar.text_input("Enter your OpenAI API key:", type="password")
+    
+    if api_key:
+        st.session_state.openai_client = get_openai_client(api_key)
+    
+    if not st.session_state.openai_client:
+        st.warning("Please enter your OpenAI API key in the sidebar.")
+        return
+
+    # Tab selection
+    tab1, tab2, tab3, tab4 = st.tabs(["Prompt Engineering", "Playground", "Agentic Prompting", "How to Use"])
+    
+    with tab1:
+        prompt_engineering_tab(st.session_state.openai_client)
+    
+    with tab2:
+        playground_tab(st.session_state.openai_client)
+    
+    with tab3:
+        agentic_prompting_tab(st.session_state.openai_client)
+    
+    with tab4:
+        how_to_use_tab()
 
 if __name__ == "__main__":
     main()
