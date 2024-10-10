@@ -2,6 +2,14 @@
 
 A comprehensive tool designed to help you explore and master various prompt engineering techniques. This project leverages LLMs (Large Language Models) to optimize and enhance your prompt crafting skills, making it easier to generate effective and context-aware prompts for a wide range of applications.
 
+## Table of Contents
+1. [Features](#features)
+2. [How to Use](#how-to-use)
+3. [Installation](#installation)
+4. [Usage](#usage)
+5. [Tools Used](#tools-used)
+6. [Contributing](#contributing)
+
 ## Features
 ### 1. Agentic Prompting
 The Agentic Prompting feature is a sophisticated tool that enhances your prompts through a two-step process:
@@ -43,14 +51,6 @@ The Playground tab allows you to experiment with different prompts and see how A
 3. **Leverage Agentic Prompting**: Use this feature for advanced optimization of your prompts.
 4. **Iterate and Refine**: Continuously improve your prompt crafting skills across all tabs.
 
-## Benefits
-
-- Improve the quality and relevance of AI-generated responses.
-- Enhance control over AI outputs.
-- Test and refine your prompts in a sandbox environment.
-- Gain deeper insights into AI reasoning processes.
-- Optimize AI performance for specific tasks.
-
 ## Installation
 
 To get started, clone the repository and install the required dependencies:
@@ -67,8 +67,11 @@ Run the application using locally using Streamlit:
 
 streamlit run app.py
 
+## Tools Used
+- Streamlit
+- CrewAI
+- OpenAI
 
 ## Contributing
 
-Contributions are welcome! Please feel free to submit a pull request or open an issue for any bugs or feature requests.
-
+Contributions are welcome! Please feel free to submit a pull request or open an issue for any bugs or feature requests. 
