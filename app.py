@@ -83,9 +83,9 @@ def generate_ai_response(client, model, system_prompt, user_input):
 def playground_tab(client):
     st.title("Prompt Playground")
     
-    model = st.selectbox("Select Model", ["gpt-4o-mini", "gpt-4o", "o1-preview"])
-    system_prompt = st.text_area("System Prompt:", "You are a helpful assistant.", key="system_prompt")
-    user_input = st.text_area("User Input:", key="playground_input")
+    model = st.selectbox("Select Model", ["gpt-4o-mini", "gpt-4o"])
+    system_prompt = st.text_area("System Prompt:", "You are a helpful assistant.", key="system_prompt", height=250)
+    user_input = st.text_area("User Input:", key="playground_input", height=100)
     
     if st.button("Generate Response"):
         if user_input:
