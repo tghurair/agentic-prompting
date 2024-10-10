@@ -1,4 +1,4 @@
-# Agentic Prompting:AI Prompt Engineering Assistant
+# Agentic Prompting: AI Prompt Engineering Assistant
 
 A comprehensive tool designed to help you explore and master various prompt engineering techniques. This project leverages LLMs (Large Language Models) to optimize and enhance your prompt crafting skills, making it easier to generate effective and context-aware prompts for a wide range of applications.
 
