@@ -62,6 +62,7 @@ pip install -r requirements.txt
 ```
 
 ## Usage
+You can explore the AI Prompt Engineering Assistant live at [agentic-prompting.streamlit.app](https://agentic-prompting.streamlit.app).
 
 Run the application using locally using Streamlit:
 
