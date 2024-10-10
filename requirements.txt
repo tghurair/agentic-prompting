@@ -2,3 +2,4 @@
 streamlit==1.37.1
 crewai==0.55.2
 crewai-tools==0.12.1
+sqlite3==3.35.0
