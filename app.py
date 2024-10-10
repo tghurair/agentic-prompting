@@ -8,10 +8,10 @@ from techniques.cot_reflection import ChainOfThoughtReflection
 from techniques.no_shot_prompt import NoShotPrompt
 from techniques.Agentic_prompting import AgenticPrompting
 from techniques.ReAct import ReActPrompt
-from pages.OverviewPage import OverviewPage
-from pages.PromptEngineeringPage import PromptEngineeringPage
-from pages.AgenticPromptingPage import AgenticPromptingPage
-from pages.PlaygroundPage import PlaygroundPage
+from GuidePageContent.OverviewPage import OverviewPage
+from GuidePageContent.PromptEngineeringPage import PromptEngineeringPage
+from GuidePageContent.AgenticPromptingPage import AgenticPromptingPage
+from GuidePageContent.PlaygroundPage import PlaygroundPage
 
 # Initialize session state
 if 'openai_client' not in st.session_state:
@@ -122,16 +122,16 @@ def agentic_prompting_tab(client):
 def guide_page():
     st.title("AI Prompt Engineering Assistant Guide")
     
-    tabs = st.tabs(["Overview", "Prompt Engineering", "Agentic Prompting", "Playground"])
+    tabs = st.tabs(["Overview", "Agentic Prompting", "Prompt Engineering", "Playground"])
     
     with tabs[0]:
         OverviewPage().render()
     
     with tabs[1]:
-        PromptEngineeringPage().render()
+        AgenticPromptingPage().render()
     
     with tabs[2]:
-        AgenticPromptingPage().render()
+        PromptEngineeringPage().render()
     
     with tabs[3]:
         PlaygroundPage().render()
@@ -139,16 +139,16 @@ def guide_page():
 def main_interface():
     st.title("AI Prompt Engineering Assistant")
     
-    tabs = st.tabs(["Prompt Engineering", "Playground", "Agentic Prompting"])
+    tabs = st.tabs(["Agentic Prompting", "Prompt Engineering", "Playground"])
     
     with tabs[0]:
-        prompt_engineering_tab(st.session_state.openai_client)
+        agentic_prompting_tab(st.session_state.openai_client)
     
     with tabs[1]:
-        playground_tab(st.session_state.openai_client)
+        prompt_engineering_tab(st.session_state.openai_client)
     
     with tabs[2]:
-        agentic_prompting_tab(st.session_state.openai_client)
+        playground_tab(st.session_state.openai_client)
 
 def main():
     st.set_page_config(layout="wide")

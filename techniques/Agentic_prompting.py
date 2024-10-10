@@ -259,7 +259,7 @@ class AgenticPrompting(PromptTechnique):
                 "Output only the enhanced prompt, without any additional text or explanation."
             ),
 
-            expected_output='Enhanced prompt that follows the decision made for which prompt technique to use',
+            expected_output='Enhanced prompt that follows the decision made for which prompt technique to use AND the specified Template of the prompt',
             agent=prompt_engineer,
             tools=[
                 GeneralPromptTool(),
